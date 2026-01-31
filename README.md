@@ -33,10 +33,7 @@
    ComfyUI/
    └── custom_nodes/
        └── Painter-Nodes/
-           ├── __init__.py
-           ├── *.py 文件
-           └── web/
-               └── js/
+         
    ```
 
 3. 安装依赖：

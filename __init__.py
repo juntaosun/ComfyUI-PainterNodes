@@ -70,6 +70,9 @@ from .PainterAudioLength import NODE_DISPLAY_NAME_MAPPINGS as PainterAudioLength
 from .PainterAudioCut import NODE_CLASS_MAPPINGS as PainterAudioCut_MAPPINGS
 from .PainterAudioCut import NODE_DISPLAY_NAME_MAPPINGS as PainterAudioCut_NAMES
 
+from .PainterS2Vplus import NODE_CLASS_MAPPINGS as PainterS2Vplus_MAPPINGS
+from .PainterS2Vplus import NODE_DISPLAY_NAME_MAPPINGS as PainterS2Vplus_NAMES
+
 
 __version__ = "1.0.0"
 
@@ -100,6 +103,7 @@ NODE_CLASS_MAPPINGS = {
     **PainterCombineFromBatch_MAPPINGS,
     **PainterAudioLength_MAPPINGS,
     **PainterAudioCut_MAPPINGS,
+    **PainterS2Vplus_MAPPINGS,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -127,6 +131,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     **PainterCombineFromBatch_NAMES,
     **PainterAudioLength_NAMES,
     **PainterAudioCut_NAMES,
+    **PainterS2Vplus_NAMES,
 }
 
 

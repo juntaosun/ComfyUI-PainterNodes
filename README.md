@@ -11,7 +11,7 @@
 
  2026-2-9更新
  
-新增PainterHumoAV2V节点，实现Humo模型进行视频对口型功能，可自定义帧率（建议16~30）（工作流见项目下workflows文件夹）
+新增PainterHumoAV2V节点，实现Humo模型2步采样进行视频对口型功能，可自定义帧率（建议16~30），效果不错，建议尝试（工作流见项目下workflows文件夹）
 
  2026-2-4更新
  
@@ -19,7 +19,7 @@
  
  2026-2-1更新：
  
- 新增PainterS2Vplus节点：实现WAN2.2-S2V模型视频对口型功能，比infinitetalk更快速度视频对口型（工作流见项目下workflows文件夹）
+ 新增PainterS2Vplus节点：实现WAN2.2-S2V模型视频2步采样对口型功能，比infinitetalk更快速度视频对口型（工作流见项目下workflows文件夹）
 
  2026-1-31更新：
  

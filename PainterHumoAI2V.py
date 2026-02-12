@@ -63,6 +63,7 @@ class PainterHumoAI2V(io.ComfyNode):
                 io.AudioEncoderOutput.Input("audio_encoder", optional=True),
                 io.Image.Input("start_image", optional=True),
                 io.Image.Input("end_image", optional=True),
+                io.Mask.Input("mask", optional=True),
             ],
             outputs=[
                 io.Conditioning.Output("high_positive"),
@@ -74,7 +75,7 @@ class PainterHumoAI2V(io.ComfyNode):
         )
 
     @classmethod
-    def execute(cls, positive, negative, vae, width, height, length, batch_size, fps, start_image=None, end_image=None, audio_encoder=None):
+    def execute(cls, positive, negative, vae, width, height, length, batch_size, fps, start_image=None, end_image=None, audio_encoder=None, mask=None):
         spacial_scale = vae.spacial_compression_encode()
         latent = torch.zeros([batch_size, vae.latent_channels, ((length - 1) // 4) + 1, height // spacial_scale, width // spacial_scale], device=comfy.model_management.intermediate_device())
         
@@ -89,20 +90,20 @@ class PainterHumoAI2V(io.ComfyNode):
             end_image_up = None
 
         image = torch.ones((length, height, width, 3)) * 0.5
-        mask = torch.ones((1, 1, latent.shape[2] * 4, latent.shape[-2], latent.shape[-1]))
+        mask_tensor = torch.ones((1, 1, latent.shape[2] * 4, latent.shape[-2], latent.shape[-1]))
 
         if start_image_up is not None:
             image[:start_image_up.shape[0]] = start_image_up
-            mask[:, :, :start_image_up.shape[0] + 3] = 0.0
+            mask_tensor[:, :, :start_image_up.shape[0] + 3] = 0.0
 
         if end_image_up is not None:
             image[-end_image_up.shape[0]:] = end_image_up
-            mask[:, :, -end_image_up.shape[0]:] = 0.0
+            mask_tensor[:, :, -end_image_up.shape[0]:] = 0.0
 
         concat_latent_image = vae.encode(image[:, :, :, :3])
-        mask = mask.view(1, mask.shape[2] // 4, 4, mask.shape[3], mask.shape[4]).transpose(1, 2)
-        high_positive = node_helpers.conditioning_set_values(positive, {"concat_latent_image": concat_latent_image, "concat_mask": mask})
-        high_negative = node_helpers.conditioning_set_values(negative, {"concat_latent_image": concat_latent_image, "concat_mask": mask})
+        mask_tensor = mask_tensor.view(1, mask_tensor.shape[2] // 4, 4, mask_tensor.shape[3], mask_tensor.shape[4]).transpose(1, 2)
+        high_positive = node_helpers.conditioning_set_values(positive, {"concat_latent_image": concat_latent_image, "concat_mask": mask_tensor})
+        high_negative = node_helpers.conditioning_set_values(negative, {"concat_latent_image": concat_latent_image, "concat_mask": mask_tensor})
 
         latent_t = ((length - 1) // 4) + 1
         has_ref = False
@@ -129,6 +130,16 @@ class PainterHumoAI2V(io.ComfyNode):
             zero_latent = torch.zeros([batch_size, 16, 1, height // 8, width // 8], device=comfy.model_management.intermediate_device())
             low_positive = node_helpers.conditioning_set_values(positive, {"reference_latents": [zero_latent]}, append=True)
             low_negative = node_helpers.conditioning_set_values(negative, {"reference_latents": [zero_latent]}, append=True)
+
+        if mask is not None:
+            if mask.dim() == 2:
+                mask = mask.unsqueeze(0).unsqueeze(0)
+            elif mask.dim() == 3:
+                mask = mask.unsqueeze(0)
+            mask_latent = comfy.utils.common_upscale(mask, width // 8, height // 8, "nearest-exact", "center")
+            mask_latent = mask_latent.squeeze(0) if mask_latent.shape[0] == 1 else mask_latent
+            low_positive = node_helpers.conditioning_set_values(low_positive, {"reference_mask": [mask_latent]})
+            low_negative = node_helpers.conditioning_set_values(low_negative, {"reference_mask": [torch.zeros_like(mask_latent)]})
 
         if audio_encoder is not None:
             audio_emb = torch.stack(audio_encoder["encoded_audio_all_layers"], dim=2)

@@ -79,8 +79,8 @@ from .PainterS2Vplus import NODE_DISPLAY_NAME_MAPPINGS as PainterS2Vplus_NAMES
 from .PainterHumoAV2V import NODE_CLASS_MAPPINGS as PainterHumoAV2V_MAPPINGS
 from .PainterHumoAV2V import NODE_DISPLAY_NAME_MAPPINGS as PainterHumoAV2V_NAMES
 
-from .PainterHumoI2V import NODE_CLASS_MAPPINGS as PainterHumoI2V_MAPPINGS
-from .PainterHumoI2V import NODE_DISPLAY_NAME_MAPPINGS as PainterHumoI2V_NAMES
+from .PainterHumoAI2V import NODE_CLASS_MAPPINGS as PainterHumoAI2V_MAPPINGS
+from .PainterHumoAI2V import NODE_DISPLAY_NAME_MAPPINGS as PainterHumoAI2V_NAMES
 
 
 __version__ = "1.0.0"
@@ -115,7 +115,7 @@ NODE_CLASS_MAPPINGS = {
     **PainterAudioCut_MAPPINGS,
     **PainterS2Vplus_MAPPINGS,
     **PainterHumoAV2V_MAPPINGS,
-    **PainterHumoI2V_MAPPINGS,
+    **PainterHumoAI2V_MAPPINGS,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -146,7 +146,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     **PainterAudioCut_NAMES,
     **PainterS2Vplus_NAMES,
     **PainterHumoAV2V_NAMES,
-    **PainterHumoI2V_NAMES,
+    **PainterHumoAI2V_NAMES,
 }
 
 
